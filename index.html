@@ -111,8 +111,8 @@
         ];
 
         const images = [
-            "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_1.png?raw=true" style="width: 90px; height: 95px;", 
-            "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_2.png?raw=true" style="width: 90px; height: 95px;",
+            "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_1.png?raw=true",
+            "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_2.png?raw=true",
             "images/question3.png",
             "images/question4.png",
             "images/question5.png",
@@ -163,7 +163,7 @@
             imgElement.classList.add("small-image"); // Apply CSS class
 
             let imageContainer = document.getElementById("imageContainer");
-            imageContainer.innerHTML = "";
+            imageContainer.innerHTML = ""; // Clear previous image
             imageContainer.appendChild(imgElement);
         }
 
