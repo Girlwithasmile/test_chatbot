@@ -11,7 +11,6 @@
             text-align: center;
             margin: 0;
             padding: 0;
-            background-image: url(); /* Add a background if needed */
             background-size: cover;
             background-position: center;
         }
@@ -22,7 +21,7 @@
             margin: 100px auto;
             padding: 20px;
             border-radius: 15px;
-            background: rgba(255, 255, 255, 0.85); /* Glass effect */
+            background: rgba(255, 255, 255, 0.85);
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
         }
@@ -66,14 +65,13 @@
         }
 
         /* Image Styling */
-         #imageContainer img {
-            width: 60px;  /* Adjust width */
-            height: 60px; /* Adjust height */
-            margin-top: 15px;
-            border-radius: 10px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-            object-fit: cover; /* Ensures proper aspect ratio */
-         }
+        .small-image {
+            width: 35px; /* Fixed size */
+            height: 35px;
+            object-fit: contain;
+            display: block;
+            margin: 10px auto;
+        }
     </style>
 </head>
 <body>
@@ -113,26 +111,26 @@
         ];
 
         const images = [
-            "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_1.png?raw=true",  
+            "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_1.png?raw=true",
             "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_2.png?raw=true",
-            "images/question3.jpg",
-            "images/question4.jpg",
-            "images/question5.jpg",
-            "images/question6.jpg",
-            "images/question7.jpg",
-            "images/question8.jpg",
-            "images/question9.jpg",
-            "images/question10.jpg",
-            "images/question11.jpg",
-            "images/question12.jpg",
-            "images/question13.jpg",
-            "images/question14.jpg",
-            "images/question15.jpg",
-            "images/question16.jpg",
-            "images/question17.jpg",
-            "images/question18.jpg",
-            "images/question19.jpg",
-            "images/question20.jpg"
+            "images/question3.png",
+            "images/question4.png",
+            "images/question5.png",
+            "images/question6.png",
+            "images/question7.png",
+            "images/question8.png",
+            "images/question9.png",
+            "images/question10.png",
+            "images/question11.png",
+            "images/question12.png",
+            "images/question13.png",
+            "images/question14.png",
+            "images/question15.png",
+            "images/question16.png",
+            "images/question17.png",
+            "images/question18.png",
+            "images/question19.png",
+            "images/question20.png"
         ];
 
         let index = 0;
@@ -161,11 +159,12 @@
         function showImage(index) {
             let imgElement = document.createElement("img");
             imgElement.setAttribute("src", images[index]);
-            imgElement.setAttribute("alt", "Question Image");
-            
-            // Clear previous image and display the new one
-            document.getElementById("imageContainer").innerHTML = "";
-            document.getElementById("imageContainer").appendChild(imgElement);
+            imgElement.setAttribute("alt", "PCOS Question Image");
+            imgElement.classList.add("small-image"); // Apply CSS class
+
+            let imageContainer = document.getElementById("imageContainer");
+            imageContainer.innerHTML = "";
+            imageContainer.appendChild(imgElement);
         }
 
         function answer(response) {
@@ -183,19 +182,19 @@
 
             if (yesCount >= 15) {
                 result = "⚠️ You have Grade 2 PCOS.";
-                message = "Your health matters! PCOS can impact your well-being in many ways. Consult a doctor as soon as possible for a proper diagnosis and treatment plan.";
+                message = "Your health matters! PCOS can impact your well-being. Consult a doctor.";
             } else if (yesCount >= 10) {
                 result = "⚠️ You have Grade 1 PCOS.";
-                message = "Your body is giving you signals—listen to them! Seeking medical advice now can help you prevent future complications.";
+                message = "Your body is giving signals—listen to them! Seek medical advice.";
             } else if (yesCount >= 8) {
-                result = "⚠️ You may have PCOS. Consider consulting a doctor.";
-                message = "You are not alone! Early medical intervention can help you manage symptoms effectively.";
+                result = "⚠️ You may have PCOS.";
+                message = "You are not alone! Early medical intervention can help.";
             } else if (yesCount >= 5) {
-                result = "✅ Your symptoms are mild, but consider consulting a doctor if discomfort persists.";
-                message = "Taking action early can help maintain hormonal balance and overall well-being.";
+                result = "✅ Mild symptoms detected.";
+                message = "Consider consulting a doctor if discomfort persists.";
             } else { 
                 result = "✅ No significant symptoms detected.";
-                message = "Your results indicate minimal concern, but a healthy lifestyle and regular check-ups are always a good idea!";
+                message = "Your results indicate minimal concern, but regular check-ups are advised!";
             }
 
             document.getElementById("output").innerHTML = `<span id="resultText">${result}</span><span>${message}</span>`;
