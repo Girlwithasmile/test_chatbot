@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Assessment Chatbot</title>
+    <style>
+        /* Background Styling */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-image: url(); /* Add a background if needed */
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Chatbox Styling */
+        #chatbox {
+            width: 50%;
+            margin: 100px auto;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.85); /* Glass effect */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Buttons Styling */
+        button {
+            margin: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        #yesBtn { background-color: #28a745; color: white; }
+        #noBtn { background-color: #dc3545; color: white; }
+        #startBtn { background-color: #007bff; color: white; }
+
+        /* Hover Effects */
+        button:hover {
+            opacity: 0.8;
+        }
+
+        /* Output Styling */
+        #output {
+            margin-top: 20px;
+        }
+
+        #output span {
+            font-size: 14px;
+            color: #444;
+            display: block;
+            margin-top: 10px;
+        }
+
+        #resultText {
+            font-size: 18px;
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Image Styling */
+        #imageContainer img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="chatbox">
+        <p id="question">Click Start to begin the assessment.</p>
+        <button id="startBtn" onclick="startChat()">Start</button>
+        <button id="yesBtn" onclick="answer('yes')" style="display:none;">Yes</button>
+        <button id="noBtn" onclick="answer('no')" style="display:none;">No</button>
+        <div id="output"></div>
+        <div id="imageContainer"></div> <!-- Container for images -->
+    </div>
+
+    <script>
+        const questions = [
+            "Have you been trying to conceive unsuccessfully for more than a year?",
+            "While trying to conceive, have you gotten more frequent positive ovulation test results?",
+            "Have you frequently experienced irregular menstrual cycles?",
+            "Have you noticed excess hair growth, especially on your face?",
+            "Have you noticed excessively oily skin or increased adult acne?",
+            "Have you experienced prolonged sleeping problems?",
+            "Are you diabetic or think you might be experiencing diabetes-like symptoms?",
+            "Do you have a history (of PCOS or pre-diabetes) in yourself or a family member?",
+            "Do you have any skin problems?",
+            "Do you feel excessively tired or low on energy most of the time?",
+            "Do you experience hair thinning or hair loss on your scalp?",
+            "Do you feel mood swings, anxiety, or depression frequently?",
+            "Have you noticed dark patches or pigmentation on your neck or other areas?",
+            "Do you struggle with unexplained weight gain, especially around the belly?",
+            "Do you often feel excessive thirst or dryness in your body?",
+            "Is your menstrual cycle shorter than 26 days or longer than 28 days?",
+            "Does your period last longer or shorter than 4-5 days, or have an inconsistent flow?",
+            "Are there any clots in the menstrual blood?",
+            "Are your periods painful before, during, or after the flow?",
+            "Do you experience minimal or no premenstrual symptoms (PMS) such as mood swings, irritability, or bloating?",
+            "Is there any discharge (yellow, white, transparent, or foul-smelling) between cycles?"
+        ];
+
+        const images = [
+            "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_1.png?raw=true",  
+            "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_2.png?raw=true",
+            "images/question3.jpg",
+            "images/question4.jpg",
+            "images/question5.jpg",
+            "images/question6.jpg",
+            "images/question7.jpg",
+            "images/question8.jpg",
+            "images/question9.jpg",
+            "images/question10.jpg",
+            "images/question11.jpg",
+            "images/question12.jpg",
+            "images/question13.jpg",
+            "images/question14.jpg",
+            "images/question15.jpg",
+            "images/question16.jpg",
+            "images/question17.jpg",
+            "images/question18.jpg",
+            "images/question19.jpg",
+            "images/question20.jpg"
+        ];
+
+        let index = 0;
+        let yesCount = 0;
+
+        function startChat() {
+            document.getElementById("startBtn").style.display = "none";
+            document.getElementById("yesBtn").style.display = "inline";
+            document.getElementById("noBtn").style.display = "inline";
+            document.getElementById("output").innerHTML = "";
+            document.getElementById("imageContainer").innerHTML = ""; // Clear previous image
+            index = 0;
+            yesCount = 0;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (index < questions.length) {
+                document.getElementById("question").innerText = questions[index];
+                showImage(index); // Display the image for the current question
+            } else {
+                showResult();
+            }
+        }
+
+        function showImage(index) {
+            let imgElement = document.createElement("img");
+            imgElement.setAttribute("src", images[index]);
+            imgElement.setAttribute("alt", "Question Image");
+            
+            // Clear previous image and display the new one
+            document.getElementById("imageContainer").innerHTML = "";
+            document.getElementById("imageContainer").appendChild(imgElement);
+        }
+
+        function answer(response) {
+            if (response === 'yes') {
+                yesCount++;
+            }
+            index++;
+            showQuestion();
+        }
+
+        function showResult() {
+            document.getElementById("yesBtn").style.display = "none";
+            document.getElementById("noBtn").style.display = "none";
+            let result, message;
+
+            if (yesCount >= 15) {
+                result = "⚠️ You have Grade 2 PCOS.";
+                message = "Your health matters! PCOS can impact your well-being in many ways. Consult a doctor as soon as possible for a proper diagnosis and treatment plan.";
+            } else if (yesCount >= 10) {
+                result = "⚠️ You have Grade 1 PCOS.";
+                message = "Your body is giving you signals—listen to them! Seeking medical advice now can help you prevent future complications.";
+            } else if (yesCount >= 8) {
+                result = "⚠️ You may have PCOS. Consider consulting a doctor.";
+                message = "You are not alone! Early medical intervention can help you manage symptoms effectively.";
+            } else if (yesCount >= 5) {
+                result = "✅ Your symptoms are mild, but consider consulting a doctor if discomfort persists.";
+                message = "Taking action early can help maintain hormonal balance and overall well-being.";
+            } else { 
+                result = "✅ No significant symptoms detected.";
+                message = "Your results indicate minimal concern, but a healthy lifestyle and regular check-ups are always a good idea!";
+            }
+
+            document.getElementById("output").innerHTML = `<span id="resultText">${result}</span><span>${message}</span>`;
+        }
+    </script>
+
+</body>
+</html>
