@@ -29,9 +29,12 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            background-color: #008CBA;
+            color: white;
         }
-        .yes { background-color: #008CBA; color: white; }
-        .no { background-color: #008CBA; color: white; }
+        .selected {
+            background-color: green !important;
+        }
         .nav-btn {
             margin-top: 20px;
             padding: 10px;
@@ -41,12 +44,22 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        #result {
+            display: none;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
     <h2>PCOS Risk Assessment Chatbot</h2>
     <div id="questions"></div>
-    <h3 id="result"></h3>
+    <div id="result"></div>
     
     <script>
         let questions = [
@@ -54,24 +67,23 @@
             { id: 2, text: "How long is your cycle?", options: {"Less than 26": 2, "26-28": 0, "More than 28": 2} },
             { id: 3, text: "Are your periods painful? When?", options: {"Before": 1, "During": 1, "After": 1, "Throughout": 4} },
             { id: 4, text: "Are there any clots in the menstrual blood? If then which color?", options: {"Black": 8, "Pink": 0, "Red": 1, "Brown": 2, "None": 0} },
-            { id: 5, text: "Is there any discharge (yellow, white, transparent, or foul-smelling) between cycles?", options: {"Yes": 1, "No": 0} },
+            { id: 5, text: "Is there any discharge between cycles?", options: {"Yes": 1, "No": 0} },
             { id: 6, text: "Do you experience (PMS) bloating?", options: {"Yes": 1, "No": 0} },
-            { id: 7, text: "Are you diabetic or experiencing diabetes-like symptoms?", options: {"Yes": 1, "No": 0} },
-            { id: 8, text: "Do you have a history of PCOS or pre-diabetes in your family?", options: {"Yes": 1, "No": 0} },
-            { id: 9, text: "Do you feel excessively tired or low on energy most of the time?", options: {"Yes": 1, "No": 0} },
-            { id: 10, text: "Do you feel mood swings, anxiety, or depression frequently?", options: {"Yes": 1, "No": 0} },
-            { id: 11, text: "Do you often feel excessive thirst or dryness in your body?", options: {"Yes": 1, "No": 0} },
+            { id: 7, text: "Are you diabetic or experiencing symptoms?", options: {"Yes": 1, "No": 0} },
+            { id: 8, text: "Do you have a history of PCOS or pre-diabetes?", options: {"Yes": 1, "No": 0} },
+            { id: 9, text: "Do you feel excessively tired most of the time?", options: {"Yes": 1, "No": 0} },
+            { id: 10, text: "Do you experience mood swings, anxiety, or depression?", options: {"Yes": 1, "No": 0} },
+            { id: 11, text: "Do you feel excessive thirst or dryness?", options: {"Yes": 1, "No": 0} },
             { id: 12, text: "Have you experienced prolonged sleeping problems?", options: {"Yes": 1, "No": 0} },
-            { id: 13, text: "Do you struggle with unexplained weight gain, especially around the belly?", options: {"Yes": 1, "No": 0} },
-            { id: 14, text: "Have you noticed excessively oily skin or increased adult acne?", options: {"Yes": 1, "No": 0} },
-            { id: 15, text: "Have you noticed excess hair growth, especially on your face?", options: {"Yes": 1, "No": 0} },
-            { id: 16, text: "Do you experience hair thinning or hair loss on your scalp?", options: {"Yes": 1, "No": 0} },
-            { id: 17, text: "Have you noticed dark patches or pigmentation on your neck or other areas?", options: {"Yes": 4, "No": 0} },
+            { id: 13, text: "Do you struggle with unexplained weight gain?", options: {"Yes": 1, "No": 0} },
+            { id: 14, text: "Have you noticed excessively oily skin or increased acne?", options: {"Yes": 1, "No": 0} },
+            { id: 15, text: "Have you noticed excess hair growth on your face?", options: {"Yes": 1, "No": 0} },
+            { id: 16, text: "Do you experience hair thinning or hair loss?", options: {"Yes": 1, "No": 0} },
+            { id: 17, text: "Have you noticed dark patches or pigmentation?", options: {"Yes": 4, "No": 0} },
             { id: 18, text: "Have you been trying to conceive unsuccessfully for more than a year?", options: {"Yes": 4, "No": 0, "Not applicable": 0} }
         ];
         
         let responses = {};
-        let score = 0;
         let currentQuestion = 1;
         
         function generateQuestions() {
@@ -88,7 +100,7 @@
                     let button = document.createElement('button');
                     button.className = 'option';
                     button.innerText = option;
-                    button.onclick = () => nextQuestion(q.id, q.text, option, q.options[option]);
+                    button.onclick = () => nextQuestion(q.id, option, q.options[option], button);
                     div.appendChild(button);
                 });
                 let backButton = document.createElement('button');
@@ -100,15 +112,18 @@
             });
         }
         
-        function nextQuestion(current, key, value, weight) {
-            responses[key] = value;
-            score += weight;
+        function nextQuestion(current, value, weight, button) {
+            if (responses[current]) {
+                document.querySelectorAll('#q' + current + ' .option').forEach(btn => btn.classList.remove('selected'));
+            }
+            responses[current] = weight;
+            button.classList.add('selected');
             document.getElementById('q' + current).classList.remove('active');
             currentQuestion++;
             if (document.getElementById('q' + currentQuestion)) {
                 document.getElementById('q' + currentQuestion).classList.add('active');
             } else {
-                document.getElementById('result').innerText = "Thank you for completing the assessment. Your risk score: " + score;
+                showResult();
             }
         }
         
@@ -118,6 +133,14 @@
                 currentQuestion--;
                 document.getElementById('q' + currentQuestion).classList.add('active');
             }
+        }
+        
+        function showResult() {
+            let totalScore = Object.values(responses).reduce((a, b) => a + b, 0);
+            document.getElementById('questions').style.display = 'none';
+            let resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<h3>Your PCOS Risk Score: ${totalScore}</h3>`;
+            resultDiv.style.display = 'block';
         }
         
         window.onload = generateQuestions;
