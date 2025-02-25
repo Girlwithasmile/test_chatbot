@@ -88,26 +88,29 @@
         
         function generateQuestions() {
     let container = document.getElementById('questions');
+    
     questions.forEach((q, index) => {
         let div = document.createElement('div');
         div.className = 'question-container';
         if (index === 0) div.classList.add('active');
         div.id = 'q' + q.id;
 
+        // Question text
         let h3 = document.createElement('h3');
         h3.innerText = q.text;
         div.appendChild(h3);
 
-        if (q.id === 1) {
-            let img = document.createElement('img');
-            img.src = 'https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_16.png?raw=true';
-            img.alt = 'Menstrual cycle illustration';
-            img.style.width = '180px';  // Set a smaller width
-            img.style.height = '200px';
-            img.style.margin = '10px auto';
-            div.appendChild(img);
-        }
+        // Image (placed between question and options)
+        let img = document.createElement('img');
+        img.src = getImageForQuestion(q.id);
+        img.alt = `Illustration for question ${q.id}`;
+        img.style.width = '200px';  // Adjust size
+        img.style.height = 'auto';
+        img.style.display = 'block';
+        img.style.margin = '10px auto';
+        div.appendChild(img);
 
+        // Answer options
         Object.keys(q.options).forEach(option => {
             let button = document.createElement('button');
             button.className = 'option';
@@ -116,6 +119,7 @@
             div.appendChild(button);
         });
 
+        // Back button
         let backButton = document.createElement('button');
         backButton.className = 'nav-btn';
         backButton.innerText = "Back";
@@ -125,6 +129,32 @@
         container.appendChild(div);
     });
 }
+
+// Function to return an image URL based on question ID
+function getImageForQuestion(id) {
+    let imageMap = {
+        1: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_16.png?raw=true",
+        2: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_3.png?raw=true",
+        3: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_17.png?raw=true",
+        4: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_18.png?raw=true",
+        5: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_21.png?raw=true",
+        6: "https://github.com/Girlwithasmile/test_chatbot/blob/main/Screenshot%202025-02-24%20190831.png?raw=true",
+        7: "https://github.com/Girlwithasmile/test_chatbot/blob/main/Screenshot%202025-02-24%20191755.png?raw=true",
+        8: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_8.png?raw=true",
+        9: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_10ii.png?raw=true",
+        10:"https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_12.png?raw=true",
+        11: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_15.png?raw=true",
+        12: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_6.png?raw=true",
+        13: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_14.png?raw=true",
+        14: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_5.png?raw=true",
+        15: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_4.png?raw=true",
+        16: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_11.png?raw=true",
+        17: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_13.png?raw=true",
+        18: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_2.png?raw=true"
+    };
+    return imageMap[id] || "https://example.com/default.jpg"; // Fallback image
+}
+
 
         
         function nextQuestion(current, value, weight, button) {
