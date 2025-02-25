@@ -87,30 +87,44 @@
         let currentQuestion = 1;
         
         function generateQuestions() {
-            let container = document.getElementById('questions');
-            questions.forEach((q, index) => {
-                let div = document.createElement('div');
-                div.className = 'question-container';
-                if (index === 0) div.classList.add('active');
-                div.id = 'q' + q.id;
-                let h3 = document.createElement('h3');
-                h3.innerText = q.text;
-                div.appendChild(h3);
-                Object.keys(q.options).forEach(option => {
-                    let button = document.createElement('button');
-                    button.className = 'option';
-                    button.innerText = option;
-                    button.onclick = () => nextQuestion(q.id, option, q.options[option], button);
-                    div.appendChild(button);
-                });
-                let backButton = document.createElement('button');
-                backButton.className = 'nav-btn';
-                backButton.innerText = "Back";
-                backButton.onclick = () => prevQuestion(q.id);
-                if (index !== 0) div.appendChild(backButton);
-                container.appendChild(div);
-            });
+    let container = document.getElementById('questions');
+    questions.forEach((q, index) => {
+        let div = document.createElement('div');
+        div.className = 'question-container';
+        if (index === 0) div.classList.add('active');
+        div.id = 'q' + q.id;
+
+        let h3 = document.createElement('h3');
+        h3.innerText = q.text;
+        div.appendChild(h3);
+
+        if (q.id === 1) {
+            let img = document.createElement('img');
+            img.src = 'https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_16.png?raw=true';
+            img.alt = 'Menstrual cycle illustration';
+            img.style.width = '80%'; // Adjust width as needed
+            img.style.margin = '10px auto';
+            div.appendChild(img);
         }
+
+        Object.keys(q.options).forEach(option => {
+            let button = document.createElement('button');
+            button.className = 'option';
+            button.innerText = option;
+            button.onclick = () => nextQuestion(q.id, option, q.options[option], button);
+            div.appendChild(button);
+        });
+
+        let backButton = document.createElement('button');
+        backButton.className = 'nav-btn';
+        backButton.innerText = "Back";
+        backButton.onclick = () => prevQuestion(q.id);
+        if (index !== 0) div.appendChild(backButton);
+        
+        container.appendChild(div);
+    });
+}
+
         
         function nextQuestion(current, value, weight, button) {
             if (responses[current]) {
