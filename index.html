@@ -59,6 +59,23 @@
             width: 50%;
             font-size: 20px;
         }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .question-container, #result {
+                width: 90%;
+                padding: 15px;
+            }
+            .option {
+                width: 100%;
+                font-size: 14px;
+                padding: 12px;
+            }
+            .nav-btn {
+                width: 45%;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -86,7 +103,6 @@
             { id: 16, text: "Do you experience hair thinning or hair loss?", options: {"Yes": 1, "No": 0} },
             { id: 17, text: "Have you noticed dark patches or pigmentation?", options: {"Yes": 4, "No": 0} },
             { id: 18, text: "Have you been trying to conceive unsuccessfully for more than a year?", options: {"Yes": 4, "No": 0, "Not applicable": 0} }
-            
         ];
         
         let responses = {};
@@ -105,7 +121,7 @@
                 h3.innerText = q.text;
                 div.appendChild(h3);
                 
-                  // Image (placed between question and options)
+                // Image (placed between question and options)
         let img = document.createElement('img');
         img.src = getImageForQuestion(q.id);
         img.alt = `Illustration for question ${q.id}`;
@@ -114,7 +130,6 @@
         img.style.display = 'block';
         img.style.margin = '10px auto';
         div.appendChild(img);
-
                 
                 Object.keys(q.options).forEach(option => {
                     let button = document.createElement('button');
@@ -142,6 +157,7 @@
                 navDiv.appendChild(nextButton);
                 
                 div.appendChild(navDiv);
+  
                 container.appendChild(div);
             });
         }
@@ -168,6 +184,7 @@
     };
     return imageMap[id] || "https://example.com/default.jpg"; // Fallback image
 }
+
         
         function selectOption(current, value, weight, button) {
             document.querySelectorAll('#q' + current + ' .option').forEach(btn => btn.classList.remove('selected'));
