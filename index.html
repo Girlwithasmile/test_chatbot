@@ -35,14 +35,19 @@
         .selected {
             background-color: green !important;
         }
-        .nav-btn {
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
             margin-top: 20px;
+        }
+        .nav-btn {
             padding: 10px;
             background-color: #008CBA;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 100px;
         }
         #result {
             display: none;
@@ -81,26 +86,26 @@
             { id: 16, text: "Do you experience hair thinning or hair loss?", options: {"Yes": 1, "No": 0} },
             { id: 17, text: "Have you noticed dark patches or pigmentation?", options: {"Yes": 4, "No": 0} },
             { id: 18, text: "Have you been trying to conceive unsuccessfully for more than a year?", options: {"Yes": 4, "No": 0, "Not applicable": 0} }
+            
         ];
         
         let responses = {};
         let currentQuestion = 1;
         
         function generateQuestions() {
-    let container = document.getElementById('questions');
-    
-    questions.forEach((q, index) => {
-        let div = document.createElement('div');
-        div.className = 'question-container';
-        if (index === 0) div.classList.add('active');
-        div.id = 'q' + q.id;
-
-        // Question text
-        let h3 = document.createElement('h3');
-        h3.innerText = q.text;
-        div.appendChild(h3);
-
-        // Image (placed between question and options)
+            let container = document.getElementById('questions');
+            
+            questions.forEach((q, index) => {
+                let div = document.createElement('div');
+                div.className = 'question-container';
+                if (index === 0) div.classList.add('active');
+                div.id = 'q' + q.id;
+                
+                let h3 = document.createElement('h3');
+                h3.innerText = q.text;
+                div.appendChild(h3);
+                
+                  // Image (placed between question and options)
         let img = document.createElement('img');
         img.src = getImageForQuestion(q.id);
         img.alt = `Illustration for question ${q.id}`;
@@ -110,28 +115,37 @@
         img.style.margin = '10px auto';
         div.appendChild(img);
 
-        // Answer options
-        Object.keys(q.options).forEach(option => {
-            let button = document.createElement('button');
-            button.className = 'option';
-            button.innerText = option;
-            button.onclick = () => nextQuestion(q.id, option, q.options[option], button);
-            div.appendChild(button);
-        });
-
-        // Back button
-        let backButton = document.createElement('button');
-        backButton.className = 'nav-btn';
-        backButton.innerText = "Back";
-        backButton.onclick = () => prevQuestion(q.id);
-        if (index !== 0) div.appendChild(backButton);
-        
-        container.appendChild(div);
-    });
-}
-
-// Function to return an image URL based on question ID
-function getImageForQuestion(id) {
+                
+                Object.keys(q.options).forEach(option => {
+                    let button = document.createElement('button');
+                    button.className = 'option';
+                    button.innerText = option;
+                    button.onclick = () => selectOption(q.id, option, q.options[option], button);
+                    div.appendChild(button);
+                });
+                
+                let navDiv = document.createElement('div');
+                navDiv.className = 'nav-container';
+                
+                let backButton = document.createElement('button');
+                backButton.className = 'nav-btn';
+                backButton.innerText = "Back";
+                backButton.onclick = () => prevQuestion(q.id);
+                if (index !== 0) navDiv.appendChild(backButton);
+                
+                let nextButton = document.createElement('button');
+                nextButton.className = 'nav-btn';
+                nextButton.innerText = "Next";
+                nextButton.onclick = () => nextQuestion(q.id);
+                nextButton.disabled = true;
+                nextButton.id = 'next' + q.id;
+                navDiv.appendChild(nextButton);
+                
+                div.appendChild(navDiv);
+                container.appendChild(div);
+            });
+        }
+        function getImageForQuestion(id) {
     let imageMap = {
         1: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_16.png?raw=true",
         2: "https://github.com/Girlwithasmile/test_chatbot/blob/main/pcos_3.png?raw=true",
@@ -154,15 +168,15 @@ function getImageForQuestion(id) {
     };
     return imageMap[id] || "https://example.com/default.jpg"; // Fallback image
 }
-
-
         
-        function nextQuestion(current, value, weight, button) {
-            if (responses[current]) {
-                document.querySelectorAll('#q' + current + ' .option').forEach(btn => btn.classList.remove('selected'));
-            }
+        function selectOption(current, value, weight, button) {
+            document.querySelectorAll('#q' + current + ' .option').forEach(btn => btn.classList.remove('selected'));
             responses[current] = weight;
             button.classList.add('selected');
+            document.getElementById('next' + current).disabled = false;
+        }
+        
+        function nextQuestion(current) {
             document.getElementById('q' + current).classList.remove('active');
             currentQuestion++;
             if (document.getElementById('q' + currentQuestion)) {
